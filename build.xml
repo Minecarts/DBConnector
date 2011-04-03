@@ -1,5 +1,8 @@
-<project name="TemplatePlugin" default="dist" basedir=".">
-	<property name="pluginname" value="${ant.project.name}"/>
+<project name="BukkitPlugin" default="dist" basedir=".">
+	<dirname property="pdir" file="build.xml" /> 
+	<basename property="dirname" file="${pdir}"/> 
+	
+	<property name="pluginname" value="${dirname}"/>
 	<property name="plugins" location="${minecraft.dir}\plugins"/>
 
 	<property name="src" location="src"/>
