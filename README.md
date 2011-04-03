@@ -23,8 +23,8 @@ Or, you can add the following content to a file, and import it under the "Global
 3.  Click next and select "Use the New Projects Wizard" and click Finish
 4.  Select Java -> Java Project and click Next
 5.  Project Name should match the one in step 2 (MyPlugin), and the location should match as well (C:\dev\Eclipse).
-
- If you did this correctly, you should see "The wizard will automatically configure the JRE and the project layout based on the existing source"
+    
+    If you did this correctly, you should see "The wizard will automatically configure the JRE and the project layout based on the existing source"
 
 6.  Click finish to create your project
 7.  Add the bukkit jar to your build path and rename all the "templateplugin" instances. Some spots you will need to rename are:
