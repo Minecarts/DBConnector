@@ -28,9 +28,9 @@ Or, you can add the following content to a file, and import it under the "Global
 
 6.  Click finish to create your project
 7.  Add the bukkit jar to your build path and rename all the "templateplugin" instances. Some spots you will need to rename are:
- -  com.minecarts.__templateplugin__.*
- -  com.minecarts.__templateplugin__.__TemplatePlugin__.java
- -  plugin.yml
+     -  com.minecarts.__templateplugin__.*
+     -  com.minecarts.__templateplugin__.__TemplatePlugin__.java
+     -  plugin.yml
  
 *The build.xml file should automatically detect the plugin name*
 
