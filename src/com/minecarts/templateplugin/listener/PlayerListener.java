@@ -1,10 +1,10 @@
 package com.minecarts.templateplugin.listener;
 
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerChatEvent;;
 
 public class PlayerListener extends org.bukkit.event.player.PlayerListener{ 
     @Override
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent e){
+    public void onPlayerChat(PlayerChatEvent e){
         //e.setCancelled(true);
     }
 }
