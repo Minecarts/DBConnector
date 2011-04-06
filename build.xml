@@ -1,7 +1,9 @@
-<project name="BukkitPlugin" default="dist" basedir=".">
+<project name="DBConnector" default="dist" basedir=".">
 	<dirname property="pdir" file="build.xml" /> 
 	<basename property="dirname" file="${pdir}"/> 
 	
+	<property name="snaq" value="C:/dev/Minecraft/lib/drivers/DBPool-5.0.jar"/>
+	<property name="mysql" value="C:/dev/Minecraft/lib/drivers/mysql-connector-java-5.1.15-bin.jar"/>
 	<property name="pluginname" value="${dirname}"/>
 	<property name="plugins" location="${minecraft.dir}\plugins"/>
 
@@ -17,6 +19,8 @@
 		<javac srcdir="${src}" destdir="${bin}" includeantruntime="false">
 			<classpath>
 				<pathelement location="${bukkit.jar}"/>
+				<pathelement location="${snaq}"/>
+				<pathelement location="${mysql}"/>
 			</classpath>
 		</javac>
 	</target>

@@ -1,13 +1,13 @@
-package com.minecarts.templateplugin.command;
+package com.minecarts.dbconnector.command;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-import com.minecarts.templateplugin.*;
+import com.minecarts.dbconnector.*;
 
-public class TestCommand extends CommandHandler{
+public class DBCommand extends CommandHandler{
     
-    public TestCommand(TemplatePlugin plugin){
+    public DBCommand(DBConnector plugin){
         super(plugin);
     }
     
