@@ -1,37 +1,51 @@
 package com.minecarts.dbconnector;
 
 import java.util.logging.Logger;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.config.Configuration;
 
+import com.minecarts.dbconnector.providers.*;
 import com.minecarts.dbconnector.command.DBCommand;
 
 import java.sql.Connection;
 
 public class DBConnector extends org.bukkit.plugin.java.JavaPlugin{
-	public final Logger log = Logger.getLogger("com.minecarts.dbconnector");	
+	public final Logger log = Logger.getLogger("com.minecarts.dbconnector"); 
+	public MySQLPool minecarts;
+	
+	private HashMap<String,Provider> providers = new HashMap<String, Provider>();
+	
     public void onEnable() {
         PluginManager pm = getServer().getPluginManager();
         PluginDescriptionFile pdf = getDescription();
         Configuration config = getConfiguration();
-
-        //Register create all the database connections
+       
+        List<String> providersActive = config.getStringList("providersActive", null);
         
-        if(Providers.mysql.connect(
-      			 config.getString("db.hostname", "127.0.0.1"),
-   	    		 config.getString("db.port", "3306"),
-   	    		 config.getString("db.database", "database"),
-   	    		 config.getString("db.username", "username"),
-   	    		 config.getString("db.password", "password")
-      			))
-        {
-        	log.info("DB Connection established to " + config.getString("db.hostname"));
-        } else {
-        	log.severe("Unable to connect to database");
+        String pkf = "providers.%s.%s"; //Pool Key Format string 
+        for(String provider : providersActive){
+            if(config.getString(String.format(pkf,provider,"type")).equalsIgnoreCase("mysqlpool")){
+                MySQLPool msqlp = new MySQLPool();
+                msqlp.connect(
+                        config.getString(String.format(pkf,provider,"hostname"), "127.0.0.1"),
+                        config.getString(String.format(pkf,provider,"port"), "3306"),
+                        config.getString(String.format(pkf,provider,"database"), "database"),
+                        config.getString(String.format(pkf,provider,"username"), "username"),
+                        config.getString(String.format(pkf,provider,"password"), "password"),
+                        config.getInt(String.format(pkf,provider,"min_conn"), 3),
+                        config.getInt(String.format(pkf,provider,"max_conn"), 5),
+                        config.getInt(String.format(pkf,provider,"max_create"), 7),
+                        config.getInt(String.format(pkf,provider,"conn_timeout"), 60*60)
+                       );
+                providers.put(provider, msqlp);
+            }
         }
-
+        
 
     
         //Register commands
@@ -41,8 +55,17 @@ public class DBConnector extends org.bukkit.plugin.java.JavaPlugin{
     }
     
     public void onDisable(){
-        if(Providers.mysql.pool != null){
-        	Providers.mysql.pool.release();
+        if(minecarts.pool != null){
+        	minecarts.pool.release();
+        }
+    }
+    
+    public Connection getConnection(String providerName){
+        if(this.providers.containsKey(providerName)){
+            return this.providers.get(providerName).getConnection();
+        } else {
+            log.severe("Invalid provider name provided to DBConnector: " + providerName);
+            return null;
         }
     }
 }

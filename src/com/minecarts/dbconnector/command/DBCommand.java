@@ -5,6 +5,8 @@ import org.bukkit.command.CommandSender;
 
 import com.minecarts.dbconnector.*;
 
+import java.sql.Connection;;
+
 public class DBCommand extends CommandHandler{
     
     public DBCommand(DBConnector plugin){
@@ -13,7 +15,14 @@ public class DBCommand extends CommandHandler{
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        sender.sendMessage("A deafult command");
+        Connection conn = plugin.minecarts.getConnection();
+        sender.sendMessage(conn.toString() + ", Pool Size: " + plugin.minecarts.pool.getSize());
+        try{
+            conn.close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
         return true;
+        
     }
 }

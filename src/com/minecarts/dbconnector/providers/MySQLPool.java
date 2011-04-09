@@ -1,4 +1,4 @@
-package com.minecarts.dbconnector.mysql;
+package com.minecarts.dbconnector.providers;
 
 import java.sql.DriverManager;
 import java.sql.Connection;
@@ -6,11 +6,11 @@ import java.sql.SQLException;
 import com.mysql.jdbc.Driver;
 import snaq.db.ConnectionPool; //http://www.snaq.net/java/DBPool/
 
-public class MySQL {
+public class MySQLPool extends Provider{
 	public ConnectionPool pool = null;
 	
 	public boolean connected;
-	public boolean connect(String host, String port, String db, String username, String password){
+	public boolean connect(String host, String port, String db, String username, String password, int min_conn, int max_conn, int max_create, int timeout){
 		try {
 			//Ensure the JDBC driver is registered with the java.sql.DriverManager
 	    	Class c = Class.forName("com.mysql.jdbc.Driver");
@@ -20,13 +20,13 @@ public class MySQL {
 	    	//Create our connection pool
 	    	String connectionString = String.format("jdbc:mysql://%s:%s/%s",host,port,db);
 	    	this.pool = new ConnectionPool("minecarts", //Pool name
-	    											 3, //Minimum connections held in the pool
-	    											 5, //Maximum connections held in the pool
-	    											 5, //Maxmimum connections that can be created
-	    											 60*60, //Idle timeout of connections in seconds (1 hour)
-	    											 connectionString,
-	    											 username,
-	    											 password);
+	    	        min_conn, //Minimum connections held in the pool
+	    	        max_conn, //Maximum connections held in the pool
+	    	        max_create, //Maxmimum connections that can be created
+	    	        timeout, //Idle timeout of connections in seconds (1 hour)
+	    	        connectionString,
+	    	        username,
+	    	        password);
 	    											 
 	       //By default the pool doesn't connect to minecarts, only when a connection is
 	    	//requested from the pool, so we can force it to connect by calling init on the pool
@@ -45,6 +45,7 @@ public class MySQL {
 			try{
 				Connection con = pool.getConnection(3000); //3 second timeout
 			    if (con != null){
+			        System.out.println("DBConnector connection: " + con.toString());
 			    	return con;
 			    } else {
 			    	System.out.println("Timeout getting a connection from the connection pool.");
