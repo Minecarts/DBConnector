@@ -27,6 +27,7 @@ public class MySQLPool extends Provider{
 	    	        connectionString,
 	    	        username,
 	    	        password);
+	    	pool.registerMBean();
 	    											 
 	       //By default the pool doesn't connect to minecarts, only when a connection is
 	    	//requested from the pool, so we can force it to connect by calling init on the pool
