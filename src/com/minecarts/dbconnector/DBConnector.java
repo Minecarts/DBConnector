@@ -4,7 +4,6 @@ import java.util.logging.Logger;
 import java.util.List;
 import java.util.HashMap;
 
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.config.Configuration;
 

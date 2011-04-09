@@ -45,7 +45,6 @@ public class MySQLPool extends Provider{
 			try{
 				Connection con = pool.getConnection(3000); //3 second timeout
 			    if (con != null){
-			        System.out.println("DBConnector connection: " + con.toString());
 			    	return con;
 			    } else {
 			    	System.out.println("Timeout getting a connection from the connection pool.");
