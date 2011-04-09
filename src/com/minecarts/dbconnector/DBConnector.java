@@ -3,6 +3,8 @@ package com.minecarts.dbconnector;
 import java.util.logging.Logger;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.config.Configuration;
@@ -50,8 +52,10 @@ public class DBConnector extends org.bukkit.plugin.java.JavaPlugin{
     }
     
     public void onDisable(){
-        if(minecarts.pool != null){
-        	minecarts.pool.release();
+        for (Object value : providers.values()) {
+            if(value instanceof MySQLPool){ //Release all MySQLPools
+                ((MySQLPool)value).pool.release();
+            }
         }
     }
     
