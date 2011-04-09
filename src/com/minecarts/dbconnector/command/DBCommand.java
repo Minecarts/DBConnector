@@ -15,14 +15,7 @@ public class DBCommand extends CommandHandler{
     
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Connection conn = plugin.minecarts.getConnection();
-        sender.sendMessage(conn.toString() + ", Pool Size: " + plugin.minecarts.pool.getSize());
-        try{
-            conn.close();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return true;
-        
+
+        return false;
     }
 }

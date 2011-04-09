@@ -2,7 +2,6 @@ package com.minecarts.dbconnector;
 
 import java.util.logging.Logger;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.plugin.PluginManager;
@@ -21,7 +20,6 @@ public class DBConnector extends org.bukkit.plugin.java.JavaPlugin{
 	private HashMap<String,Provider> providers = new HashMap<String, Provider>();
 	
     public void onEnable() {
-        PluginManager pm = getServer().getPluginManager();
         PluginDescriptionFile pdf = getDescription();
         Configuration config = getConfiguration();
        
@@ -46,8 +44,6 @@ public class DBConnector extends org.bukkit.plugin.java.JavaPlugin{
             }
         }
         
-
-    
         //Register commands
         getCommand("db").setExecutor(new DBCommand(this));
         
