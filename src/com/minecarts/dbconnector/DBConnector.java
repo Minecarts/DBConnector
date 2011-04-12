@@ -52,7 +52,10 @@ public class DBConnector extends org.bukkit.plugin.java.JavaPlugin{
     public void onDisable(){
         for (Object value : providers.values()) {
             if(value instanceof MySQLPool){ //Release all MySQLPools
+                ((MySQLPool)value).connected = false;
                 ((MySQLPool)value).pool.release();
+                ((MySQLPool)value).pool.unregisterMBean();
+                System.out.println("Released pool");
             }
         }
     }

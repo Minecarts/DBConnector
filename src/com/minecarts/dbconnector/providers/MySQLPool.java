@@ -35,7 +35,7 @@ public class MySQLPool extends Provider{
             connected = true;
            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
     }
