@@ -31,9 +31,7 @@ public class DBConnector extends org.bukkit.plugin.java.JavaPlugin{
             if(config.getString(String.format(pkf,provider,"type")).equalsIgnoreCase("mysqlpool")){
                 MySQLPool msqlp = new MySQLPool();
                 msqlp.connect(
-                        config.getString(String.format(pkf,provider,"hostname"), "127.0.0.1"),
-                        config.getString(String.format(pkf,provider,"port"), "3306"),
-                        config.getString(String.format(pkf,provider,"database"), "database"),
+                        config.getString(String.format(pkf,provider,"url"), "jdbc:mysql://localhost:3306/database"),
                         config.getString(String.format(pkf,provider,"username"), "username"),
                         config.getString(String.format(pkf,provider,"password"), "password"),
                         config.getInt(String.format(pkf,provider,"min_conn"), 3),
