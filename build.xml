@@ -30,6 +30,8 @@
 		<jar jarfile="${dist}/${pluginname}.jar">
 			<fileset dir="${bin}"/>
 			<fileset file="${src}/plugin.yml"/>
+			<zipgroupfileset file="C:/dev/Minecraft/lib/drivers/DBPool-5.0.jar"/>
+			<zipgroupfileset file="C:/dev/Minecraft/lib/drivers/commons-logging-1.1.1.jar"/>
 		</jar>
 	</target>
 	
