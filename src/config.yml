@@ -1,0 +1,11 @@
+providersActive: ["providerName"]
+providers:
+   providerName:
+      type: mysqlpool
+      url: "jdbc:mysql://yourdomain.com:3306/db"
+      username: user
+      password: password
+      min_conn: 3
+      max_conn: 5
+      max_create: 7
+      conn_timeout: 3600
