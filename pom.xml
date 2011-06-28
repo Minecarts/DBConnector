@@ -40,5 +40,12 @@
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>snaq.db</groupId>
+      <artifactId>dbpool</artifactId>
+      <version>5.0.0</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 </project>
