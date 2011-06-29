@@ -48,4 +48,11 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
+   <distributionManagement>
+    <repository>
+      <id>releases</id>
+      <name>Minecarts.com Releases</name>
+      <url>http://artifactory.jazer.com/nexus/content/repositories/releases</url>
+    </repository>
+  </distributionManagement>
 </project>
