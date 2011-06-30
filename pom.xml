@@ -5,6 +5,12 @@
   <artifactId>DBConnector</artifactId>
   <name>DBConnector</name>
   <url>http://www.minecarts.com</url>
+  <repositories>
+    <repository>
+      <id>nexus</id>
+      <url>http://artifactory.jazer.com/nexus/content/repositories/releases/</url>
+    </repository>
+  </repositories>
   <build>
       <resources>
           <resource>
@@ -48,4 +54,11 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
+  <distributionManagement>
+    <repository>
+      <id>nexus</id>
+      <name>Nexus Repo</name>
+      <url>http://artifactory.jazer.com/nexus/content/repositories/releases/</url>
+    </repository>
+  </distributionManagement>
 </project>
