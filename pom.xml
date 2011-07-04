@@ -73,6 +73,13 @@
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache</groupId>
+      <artifactId>LogFactory</artifactId>
+      <version>1.2.6</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
   <distributionManagement>
     <repository>
