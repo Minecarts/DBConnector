@@ -6,10 +6,11 @@ import java.sql.SQLException;
 import com.mysql.jdbc.Driver;
 import snaq.db.ConnectionPool; //http://www.snaq.net/java/DBPool/
 
-public class MySQLPool extends Provider{
-    public ConnectionPool pool = null;
+public class MySQLPool implements Provider {
     
+    public ConnectionPool pool = null;
     public boolean connected;
+    
     public boolean connect(String url, String username, String password, int min_conn, int max_conn, int max_create, int timeout){
         try {
             //Ensure the JDBC driver is registered with the java.sql.DriverManager

@@ -14,11 +14,13 @@ import com.minecarts.dbconnector.command.DBCommand;
 
 import java.sql.Connection;
 
-public class DBConnector extends org.bukkit.plugin.java.JavaPlugin{
-	public final Logger log = Logger.getLogger("com.minecarts.dbconnector"); 
-	public MySQLPool minecarts;
+
+public class DBConnector extends org.bukkit.plugin.java.JavaPlugin {
+    
+    public final Logger log = Logger.getLogger("com.minecarts.dbconnector"); 
+    public MySQLPool minecarts;
 	
-	private HashMap<String,Provider> providers = new HashMap<String, Provider>();
+    private HashMap<String, Provider> providers = new HashMap<String, Provider>();
 	
     public void onEnable() {
         PluginDescriptionFile pdf = getDescription();
@@ -60,12 +62,18 @@ public class DBConnector extends org.bukkit.plugin.java.JavaPlugin{
         }
     }
     
-    public Connection getConnection(String providerName){
-        if(this.providers.containsKey(providerName)){
-            return this.providers.get(providerName).getConnection();
+    
+    public Provider getProvider(String name) {
+        if(providers.containsKey(name)) {
+            return providers.get(name);
         } else {
-            log.severe("Invalid provider name provided to DBConnector: " + providerName);
+            log.severe("Invalid provider name provided to DBConnector: " + name);
             return null;
         }
+    }
+    
+    public Connection getConnection(String name){
+        Provider provider = getProvider(name);
+        return provider == null ? null : provider.getConnection();
     }
 }
