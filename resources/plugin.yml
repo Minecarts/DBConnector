@@ -1,11 +1,6 @@
 name: DBConnector
 main: com.minecarts.dbconnector.DBConnector
 version: ${pom.version}
-website: http://minecarts.com
-author: Verrier
-description: >
-             DB connection pool and misc helper plugin
-commands:
-  db:
-    description: Access database commands
-    usage: /<command> [subcmd]
+website: http://minecarts.com/
+author: verrier, megabytes
+description: Database connection pooling

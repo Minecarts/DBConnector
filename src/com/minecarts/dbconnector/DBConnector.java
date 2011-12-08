@@ -1,79 +1,88 @@
 package com.minecarts.dbconnector;
 
 import java.util.logging.Logger;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.logging.Level;
+import java.text.MessageFormat;
 
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.util.config.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 
-import com.minecarts.dbconnector.providers.*;
-import com.minecarts.dbconnector.command.DBCommand;
+import java.util.HashMap;
 
+import com.minecarts.dbconnector.pool.*;
 import java.sql.Connection;
 
 
 public class DBConnector extends org.bukkit.plugin.java.JavaPlugin {
     
-    public final Logger log = Logger.getLogger("com.minecarts.dbconnector"); 
-    public MySQLPool minecarts;
+    public final Logger logger = Logger.getLogger("com.minecarts.dbconnector"); 
 	
-    private HashMap<String, Provider> providers = new HashMap<String, Provider>();
+    private HashMap<String, Pool> pools = new HashMap<String, Pool>();
 	
     public void onEnable() {
         PluginDescriptionFile pdf = getDescription();
-        Configuration config = getConfiguration();
-       
-        List<String> providersActive = config.getStringList("providersActive", null);
+        FileConfiguration config = getConfig();
         
-        String pkf = "providers.%s.%s"; //Pool Key Format string 
-        for(String provider : providersActive){
-            if(config.getString(String.format(pkf,provider,"type")).equalsIgnoreCase("mysqlpool")){
-                MySQLPool msqlp = new MySQLPool();
-                msqlp.connect(
-                        config.getString(String.format(pkf,provider,"url"), "jdbc:mysql://localhost:3306/database"),
-                        config.getString(String.format(pkf,provider,"username"), "username"),
-                        config.getString(String.format(pkf,provider,"password"), "password"),
-                        config.getInt(String.format(pkf,provider,"min_conn"), 3),
-                        config.getInt(String.format(pkf,provider,"max_conn"), 5),
-                        config.getInt(String.format(pkf,provider,"max_create"), 7),
-                        config.getInt(String.format(pkf,provider,"conn_timeout"), 60*60)
-                       );
-                providers.put(provider, msqlp);
+        ConfigurationSection defaults = config.getConfigurationSection("defaults");
+        ConfigurationSection providers = config.getConfigurationSection("pools");
+        
+        for(String providerName : providers.getKeys(false)) {
+            ConfigurationSection provider = providers.getConfigurationSection(providerName);
+            
+            String url = provider.getString("url", defaults.getString("url"));
+            String username = provider.getString("username", defaults.getString("username"));
+            String password = provider.getString("password", defaults.getString("password"));
+            int minConn = provider.getInt("minConn", defaults.getInt("minConn"));
+            int maxConn = provider.getInt("maxConn", defaults.getInt("maxConn"));
+            int maxCreated = provider.getInt("maxCreated", defaults.getInt("maxCreated"));
+            int connTimeout = provider.getInt("connTimeout", defaults.getInt("connTimeout"));
+            
+            if(url.startsWith("jdbc:mysql:")) {
+                MySQLPool pool = new MySQLPool(providerName);
+                pool.connect(url, username, password, minConn, maxConn, maxCreated, connTimeout);
+                pools.put(providerName, pool);
             }
         }
         
-        //Register commands
-        getCommand("db").setExecutor(new DBCommand(this));
-        
-        log.info("[" + pdf.getName() + "] version " + pdf.getVersion() + " enabled.");
+        log("Version {0} enabled.", getDescription().getVersion());
     }
     
     public void onDisable(){
-        for (Object value : providers.values()) {
-            if(value instanceof MySQLPool){ //Release all MySQLPools
-                ((MySQLPool)value).connected = false;
-                ((MySQLPool)value).pool.releaseForcibly();
-                ((MySQLPool)value).pool.unregisterMBean();
-                System.out.println("Released pool");
-            }
+        for(Pool pool : pools.values()) {
+            pool.release();
+            log("Released pool {0}", pool);
         }
     }
     
+    public void log(String message) {
+        log(Level.INFO, message);
+    }
+    public void log(Level level, String message) {
+        logger.log(level, MessageFormat.format("{0}> {1}", getDescription().getName(), message));
+    }
+    public void log(String message, Object... args) {
+        log(MessageFormat.format(message, args));
+    }
+    public void log(Level level, String message, Object... args) {
+        log(level, MessageFormat.format(message, args));
+    }
     
-    public Provider getProvider(String name) {
-        if(providers.containsKey(name)) {
-            return providers.get(name);
-        } else {
-            log.severe("Invalid provider name provided to DBConnector: " + name);
-            return null;
+    
+    public Pool getPool(String name) {
+        name = getConfig().getString("defaults.pool", name);
+        
+        if(pools.containsKey(name)) {
+            return pools.get(name);
         }
+        
+        log("DBConnector.getPool() called with invalid pool name {0}", name);
+        return null;
     }
     
     public Connection getConnection(String name){
-        Provider provider = getProvider(name);
-        return provider == null ? null : provider.getConnection();
+        Pool pool = getPool(name);
+        return pool == null ? null : pool.getConnection();
     }
+    
 }

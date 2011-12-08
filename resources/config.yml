@@ -1,0 +1,5 @@
+defaults:
+    minConn: 3
+    maxConn: 5
+    maxCreated: 7
+    connTimeout: 3600 # one hour
