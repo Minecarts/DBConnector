@@ -17,7 +17,7 @@ public class MySQLPool implements Pool {
     
     @Override
     public String toString() {
-        return String.format("(%s)%s", this.getClass().getName(), name);
+        return String.format("{MySQLPool \"%s\"}", name);
     }
     
     public boolean connect(String url, String username, String password, int minConn, int maxConn, int maxCreated, int connTimeout){
@@ -36,7 +36,7 @@ public class MySQLPool implements Pool {
 
         //Create our connection pool
         pool = new ConnectionPool(
-                        String.format("%s@%s", username, url), //Pool name
+                        name, //Pool name
                         minConn, //Minimum connections held in the pool
                         maxConn, //Maximum connections held in the pool
                         maxCreated, //Maximum connections that can be created
