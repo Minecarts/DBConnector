@@ -4,44 +4,39 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.text.MessageFormat;
 
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.HashMap;
 
-import com.minecarts.dbconnector.pool.*;
+import com.minecarts.dbconnector.provider.*;
 import java.sql.Connection;
 
 
 public class DBConnector extends org.bukkit.plugin.java.JavaPlugin {
-    
-    public final Logger logger = Logger.getLogger("com.minecarts.dbconnector"); 
-	
-    private HashMap<String, Pool> pools = new HashMap<String, Pool>();
+    public final Logger logger = Logger.getLogger("com.minecarts.dbconnector");
+    private HashMap<String, Provider> cache = new HashMap<String, Provider>();
 	
     public void onEnable() {
-        PluginDescriptionFile pdf = getDescription();
         FileConfiguration config = getConfig();
         
-        ConfigurationSection defaults = config.getConfigurationSection("defaults");
-        ConfigurationSection providers = config.getConfigurationSection("pools");
+        ConfigurationSection providers = config.getConfigurationSection("providers");
         
         for(String providerName : providers.getKeys(false)) {
             ConfigurationSection provider = providers.getConfigurationSection(providerName);
+            String type = provider.getString("type");
             
-            String url = provider.getString("url", defaults.getString("url"));
-            String username = provider.getString("username", defaults.getString("username"));
-            String password = provider.getString("password", defaults.getString("password"));
-            int minConn = provider.getInt("minConn", defaults.getInt("minConn"));
-            int maxConn = provider.getInt("maxConn", defaults.getInt("maxConn"));
-            int maxCreated = provider.getInt("maxCreated", defaults.getInt("maxCreated"));
-            int connTimeout = provider.getInt("connTimeout", defaults.getInt("connTimeout"));
-            
-            if(url.startsWith("jdbc:mysql:")) {
-                MySQLPool pool = new MySQLPool(providerName);
-                pool.connect(url, username, password, minConn, maxConn, maxCreated, connTimeout);
-                pools.put(providerName, pool);
+            if(type.equalsIgnoreCase("MySQLPool")) {
+                String url = provider.getString("url");
+                String username = provider.getString("username");
+                String password = provider.getString("password");
+                int minConn = provider.getInt("minConn");
+                int maxConn = provider.getInt("maxConn");
+                int maxCreated = provider.getInt("maxCreated");
+                int connTimeout = provider.getInt("connTimeout");
+
+                MySQLPool pool = new MySQLPool(providerName, url, username, password, minConn, maxConn, maxCreated, connTimeout);
+                cache.put(providerName, pool);
             }
         }
         
@@ -49,9 +44,9 @@ public class DBConnector extends org.bukkit.plugin.java.JavaPlugin {
     }
     
     public void onDisable(){
-        for(Pool pool : pools.values()) {
-            pool.release();
-            log("Released pool {0}", pool);
+        for(Provider provider : cache.values()) {
+            provider.release();
+            log("Released provider {0}", provider);
         }
     }
     
@@ -69,20 +64,20 @@ public class DBConnector extends org.bukkit.plugin.java.JavaPlugin {
     }
     
     
-    public Pool getPool(String name) {
-        name = getConfig().getString("defaults.pool", name);
-        
-        if(pools.containsKey(name)) {
-            return pools.get(name);
+    public Provider getProvider() {
+        return getProvider(getConfig().getString("defaultProvider"));
+    }
+    public Provider getProvider(String name) {
+        if(cache.containsKey(name)) {
+            return cache.get(name);
         }
-        
-        log("DBConnector.getPool() called with invalid pool name {0}", name);
+        log("DBConnector.getProvider() called with invalid provider name {0}", name);
         return null;
     }
     
     public Connection getConnection(String name){
-        Pool pool = getPool(name);
-        return pool == null ? null : pool.getConnection();
+        Provider provider = getProvider(name);
+        return provider == null ? null : provider.getConnection();
     }
     
 }
