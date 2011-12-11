@@ -65,16 +65,22 @@ public class DBConnector extends org.bukkit.plugin.java.JavaPlugin {
     
     
     public Provider getProvider() {
-        return getProvider(getConfig().getString("defaultProvider"));
+        return getProvider(null);
     }
     public Provider getProvider(String name) {
+        if(name == null) name = getConfig().getString("defaultProvider");
+        
         if(cache.containsKey(name)) {
             return cache.get(name);
         }
+        
         log("DBConnector.getProvider() called with invalid provider name {0}", name);
         return null;
     }
     
+    public Connection getConnection() {
+        return getConnection(null);
+    }
     public Connection getConnection(String name){
         Provider provider = getProvider(name);
         return provider == null ? null : provider.getConnection();
