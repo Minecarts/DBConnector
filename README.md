@@ -9,21 +9,12 @@ http://www.snaq.net/java/DBPool/
 
 ## Example config.yml
 
-    defaults:
-        # default pool returned when getPool() is called with no/null arguments
-        pool: mysql # pool name
+    # default provider name used when getProvider() is called with no arguments
+    defaultProvider: mysql
 
-        # default values for pools section
-	    url: "jdbc:mysql://localhost:3306/minecraft"
-	    username: "root"
-	    password: ""
-        minConn: 3
-        maxConn: 5
-        maxCreated: 7
-        connTimeout: 3600 # seconds
-
-    pools:
-        mysql: # pool name
+    providers:
+        mysql: # provider name
+            type: MySQLPool
             url: "jdbc:mysql://localhost:3306/db"
             username: "user"
             password: "password"
